@@ -1,1 +1,51 @@
+{
+  "Comment": "Sample Step Functions State Machine",
+  "StartAt": "ValidateInput",
+  "States": {
+    "ValidateInput": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.userId",
+          "IsPresent": true,
+          "Next": "ProcessUser"
+        }
+      ],
+      "Default": "InvalidInput"
+    },
 
+    "ProcessUser": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:ap-northeast-1:123456789012:function:processUser",
+      "Next": "CheckResult"
+    },
+
+    "CheckResult": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.status",
+          "StringEquals": "SUCCESS",
+          "Next": "SuccessState"
+        }
+      ],
+      "Default": "RetryProcessing"
+    },
+
+    "RetryProcessing": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "ProcessUser"
+    },
+
+    "InvalidInput": {
+      "Type": "Fail",
+      "Error": "InvalidInputError",
+      "Cause": "userId is missing"
+    },
+
+    "SuccessState": {
+      "Type": "Succeed"
+    }
+  }
+}
