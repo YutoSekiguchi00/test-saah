@@ -1,5 +1,5 @@
 {
-  "Comment": "Sample Step Functions State Machine",
+  "Comment": "Sample Step Functions State Machine 1",
   "StartAt": "ValidateInput",
   "States": {
     "ValidateInput": {
@@ -13,13 +13,11 @@
       ],
       "Default": "InvalidInput"
     },
-
     "ProcessUser": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:ap-northeast-1:123456789012:function:processUser",
       "Next": "CheckResult"
     },
-
     "CheckResult": {
       "Type": "Choice",
       "Choices": [
@@ -31,19 +29,16 @@
       ],
       "Default": "RetryProcessing"
     },
-
     "RetryProcessing": {
       "Type": "Wait",
       "Seconds": 5,
       "Next": "ProcessUser"
     },
-
     "InvalidInput": {
       "Type": "Fail",
       "Error": "InvalidInputError",
       "Cause": "userId is missing"
     },
-
     "SuccessState": {
       "Type": "Succeed"
     }
