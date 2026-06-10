@@ -1,1 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Simple EC2 sample stack
 
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+    Description: EC2 instance type
+
+Resources:
+  MySecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0c3fd0f5d33134a76
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref MySecurityGroup
+      Tags:
+        - Key: Name
+          Value: SampleServer
+
+Outputs:
+  InstanceId:
+    Description: EC2 Instance ID
+    Value: !Ref MyEC2Instance
+
+  PublicIP:
+    Description: Public IP Address
+    Value: !GetAtt MyEC2Instance.PublicIp
