@@ -1,0 +1,64 @@
+openapi: 3.0.1
+info:
+  title: tokuzumi-test-private-api
+  version: 1.0.0
+  description: Test deployable OpenAPI definition for private API
+
+servers:
+  - url: https://a2jflb16f4.execute-api.ap-northeast-1.amazonaws.com/{stage}
+    variables:
+      stage:
+        default: test
+
+x-amazon-apigateway-endpoint-configuration:
+  types:
+    - PRIVATE
+  vpcEndpointIds:
+    - vpce-053df1c3561f9c1d1
+    - vpce-0ff12b0fcf12d200a
+    - vpce-02aa5cd46f8aa751d
+    - vpce-01ad0205c895dd5d7
+
+x-amazon-apigateway-policy:
+  Version: "2012-10-17"
+  Statement:
+    - Effect: Deny
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource: arn:aws:execute-api:ap-northeast-1:149917338256:a2jflb16f4/*/*
+      Condition:
+        StringNotEquals:
+          aws:SourceVpce:
+            - vpce-053df1c3561f9c1d1
+            - vpce-0ff12b0fcf12d200a
+            - vpce-02aa5cd46f8aa751d
+            - vpce-01ad0205c895dd5d7
+
+    - Effect: Allow
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource: arn:aws:execute-api:ap-northeast-1:149917338256:a2jflb16f4/*/*
+
+paths:
+  /hello:
+    get:
+      summary: Hello endpoint
+      description: Returns hello message.
+      responses:
+        "200":
+          description: Successful hello response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Hello from private API Gateway!"
+      x-amazon-apigateway-integration:
+        type: aws_proxy
+        httpMethod: POST
+        uri: arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-northeast-1:123456789012:function:yourLambdaFunctionName/invocations
+
+components: {}
