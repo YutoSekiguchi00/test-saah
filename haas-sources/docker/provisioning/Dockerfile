@@ -1,5 +1,5 @@
 # ベースイメージ
-FROM python:3.12-slim
+FROM public.ecr.aws/docker/library/python:3.12-slim
 
 # 作業ディレクトリ
 WORKDIR /app
