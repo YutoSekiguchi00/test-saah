@@ -1,7 +1,7 @@
 """
 my_test_lib.py
 
-AWS Lambda Layer の動作確認用の簡易独自ライブラリdesuyodayo
+AWS Lambda Layer の動作確認用の簡易独自ライブラリ
 """
 
 from datetime import datetime, timezone
